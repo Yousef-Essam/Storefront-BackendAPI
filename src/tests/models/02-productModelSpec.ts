@@ -55,7 +55,7 @@ describe('Product Model Testing', async () => {
             
             expect(result[0]).toEqual({
                 id: 1,
-                name: 'Product1',
+                name: 'Device1',
                 price: 500,
                 category: 'Generic Category'
             });
@@ -66,6 +66,61 @@ describe('Product Model Testing', async () => {
             const result = await store.read('*')
             
             expect(result).toEqual([]);
+        });
+
+        it('should create two sample products for testing other models and handlers', async () => {
+            await store.create({
+                name: 'Product2',
+                price: 500,
+                category: 'category1'
+            });
+
+            await store.create({
+                name: 'Product3',
+                price: 750,
+                category: 'category1'
+            });
+
+            await store.create({
+                name: 'Product4',
+                price: 1000,
+                category: 'category2'
+            });
+
+            await store.create({
+                name: 'Product5',
+                price: 1500,
+                category: 'category2'
+            });
+
+            const result = await store.read('*')
+    
+            expect(result).toEqual([
+                {
+                    id: 2,
+                    name: 'Product2',
+                    price: 500,
+                    category: 'category1'
+                },
+                {
+                    id: 3,
+                    name: 'Product3',
+                    price: 750,
+                    category: 'category1'
+                },
+                {
+                    id: 4,
+                    name: 'Product4',
+                    price: 1000,
+                    category: 'category2'
+                },
+                {
+                    id: 5,
+                    name: 'Product5',
+                    price: 1500,
+                    category: 'category2'
+                }
+            ]);
         });
     })
 })

@@ -122,10 +122,12 @@ export class OrderStore {
         try {
             const conn = await Client.connect()
             const query = OrderStore.createDeleteQuery(filter)
-            const result = await conn.query(query)
+            const prodQuery = 'DELETE FROM orders_products WHERE order_id = $1;'
+            await conn.query(prodQuery, [(filter as Order).id]);
+            await conn.query(query)
             conn.release()
 
-            return result.rows
+            return this.read('*')
         } catch (err) {
             throw new Error(
                 `Can not delete from Table Orders ${(<Error>err).message}`
