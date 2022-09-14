@@ -8,7 +8,7 @@
     "watch": "npx tsc -w",
     "start": "nodemon src/server.ts",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-    "test": "set ENV=test&& db-migrate --env test up && jasmine-ts && db-migrate --count 5 --env test down"
+    "test": "set ENV=test&& db-migrate --count 5 --env test down && db-migrate --env test up && jasmine-ts && db-migrate --count 5 --env test down"
   },
   "keywords": [],
   "author": "",

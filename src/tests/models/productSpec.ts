@@ -55,7 +55,7 @@ describe('Product Model Testing', async () => {
             
             expect(result[0]).toEqual({
                 id: 1,
-                name: 'Device1',
+                name: 'Product1',
                 price: 500,
                 category: 'Generic Category'
             });
