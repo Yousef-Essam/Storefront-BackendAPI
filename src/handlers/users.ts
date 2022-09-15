@@ -4,7 +4,7 @@ import { UserStore } from '../models/user'
 import createToken from '../assets/createToken'
 
 const router = express.Router()
-const store = new UserStore
+const store = new UserStore()
 
 const index = async (req: Request, res: Response) => {
     const result = await store.read(['id', 'firstname', 'lastname'])
@@ -19,6 +19,18 @@ const show = async (req: Request, res: Response) => {
 }
 
 const create = async (req: Request, res: Response) => {
+    if (!req.body.firstname || !req.body.lastname || !req.body.password) {
+        res.status(400).json(
+            'Missing Credentials. "firstname", "lastname" and "password" fields are required.'
+        )
+        return
+    }
+
+    if (req.body.password.length < 6) {
+        res.status(400).json('Password must be at least 6 characters.')
+        return
+    }
+
     const newUser = await store.create({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
@@ -32,11 +44,18 @@ const create = async (req: Request, res: Response) => {
             firstname: newUser.firstname,
             lastname: newUser.lastname,
             exp: Math.floor(Date.now() / 1000) + 60 * 60,
-        })
+        }),
     })
 }
 
 const authenticate = async (req: Request, res: Response) => {
+    if (!req.body.firstname || !req.body.lastname || !req.body.password) {
+        res.status(400).json(
+            'Missing Credentials. "firstname", "lastname" and "password" fields are required.'
+        )
+        return
+    }
+
     const user = await store.authenticate(
         req.body.firstname,
         req.body.lastname,
@@ -50,7 +69,7 @@ const authenticate = async (req: Request, res: Response) => {
                 firstname: user.firstname,
                 lastname: user.lastname,
                 exp: Math.floor(Date.now() / 1000) + 60 * 60,
-            })
+            }),
         })
     else res.status(401).send('Username or password are invalid.')
 }

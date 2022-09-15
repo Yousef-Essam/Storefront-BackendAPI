@@ -11,7 +11,9 @@ var verifyAuthToken = function (req, res, next) {
     try {
         var token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
         var decoded = jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET);
-        req.params.user = decoded;
+        req.params.tokenUserID = decoded.id;
+        if (process.env.ENV !== 'test')
+            console.log("---- REQUEST made by user of id ".concat(req.params.tokenUserID));
         next();
     }
     catch (err) {

@@ -44,7 +44,7 @@ var verifyAuthToken_1 = __importDefault(require("../middleware/verifyAuthToken")
 var user_1 = require("../models/user");
 var createToken_1 = __importDefault(require("../assets/createToken"));
 var router = express_1.default.Router();
-var store = new user_1.UserStore;
+var store = new user_1.UserStore();
 var index = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var result;
     return __generator(this, function (_a) {
@@ -61,7 +61,9 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
     var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.read(['firstname', 'lastname'], { id: parseInt(req.params.id) })];
+            case 0: return [4 /*yield*/, store.read(['firstname', 'lastname'], {
+                    id: parseInt(req.params.id),
+                })];
             case 1:
                 result = _a.sent();
                 res.json(result[0]);
@@ -73,19 +75,31 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
     var newUser;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.create({
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
-                    password: req.body.password
-                })];
+            case 0:
+                if (!req.body.firstname || !req.body.lastname || !req.body.password) {
+                    res.status(400).json('Missing Credentials. "firstname", "lastname" and "password" fields are required.');
+                    return [2 /*return*/];
+                }
+                if (req.body.password.length < 6) {
+                    res.status(400).json('Password must be at least 6 characters.');
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, store.create({
+                        firstname: req.body.firstname,
+                        lastname: req.body.lastname,
+                        password: req.body.password,
+                    })];
             case 1:
                 newUser = _a.sent();
-                res.json((0, createToken_1.default)({
+                res.json({
                     id: newUser.id,
-                    firstname: newUser.firstname,
-                    lastname: newUser.lastname,
-                    exp: Math.floor(Date.now() / 1000) + 60 * 60
-                }));
+                    token: (0, createToken_1.default)({
+                        id: newUser.id,
+                        firstname: newUser.firstname,
+                        lastname: newUser.lastname,
+                        exp: Math.floor(Date.now() / 1000) + 60 * 60,
+                    }),
+                });
                 return [2 /*return*/];
         }
     });
@@ -94,16 +108,24 @@ var authenticate = function (req, res) { return __awaiter(void 0, void 0, void 0
     var user;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.authenticate(req.body.firstname, req.body.lastname, req.body.password)];
+            case 0:
+                if (!req.body.firstname || !req.body.lastname || !req.body.password) {
+                    res.status(400).json('Missing Credentials. "firstname", "lastname" and "password" fields are required.');
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, store.authenticate(req.body.firstname, req.body.lastname, req.body.password)];
             case 1:
                 user = _a.sent();
                 if (user)
-                    res.json((0, createToken_1.default)({
+                    res.json({
                         id: user.id,
-                        firstname: user.firstname,
-                        lastname: user.lastname,
-                        exp: Math.floor(Date.now() / 1000) + 60 * 60
-                    }));
+                        token: (0, createToken_1.default)({
+                            id: user.id,
+                            firstname: user.firstname,
+                            lastname: user.lastname,
+                            exp: Math.floor(Date.now() / 1000) + 60 * 60,
+                        }),
+                    });
                 else
                     res.status(401).send('Username or password are invalid.');
                 return [2 /*return*/];

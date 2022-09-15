@@ -64,7 +64,9 @@ export class ProductStore {
             }
         }
         let filterString = ProductStore.createFilter(filter)
-        return `UPDATE products SET ${newV.join(', ')}${filterString} RETURNING *;`
+        return `UPDATE products SET ${newV.join(
+            ', '
+        )}${filterString} RETURNING *;`
     }
 
     private static createDeleteQuery(filter?: Product): string {

@@ -41,9 +41,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var verifyAuthToken_1 = __importDefault(require("../middleware/verifyAuthToken"));
+var dashboard_1 = require("../models/dashboard");
 var product_1 = require("../models/product");
 var router = express_1.default.Router();
-var store = new product_1.ProductStore;
+var store = new product_1.ProductStore();
+var dash = new dashboard_1.Dashboard();
 var index = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, _b;
     return __generator(this, function (_c) {
@@ -63,9 +65,24 @@ var show = function (req, res) { return __awaiter(void 0, void 0, void 0, functi
         switch (_c.label) {
             case 0:
                 _b = (_a = res).json;
-                return [4 /*yield*/, store.read(['name', 'price', 'category'], { id: parseInt(req.params.id) })];
+                return [4 /*yield*/, store.read(['name', 'price', 'category'], {
+                        id: parseInt(req.params.id),
+                    })];
             case 1:
                 _b.apply(_a, [(_c.sent())[0]]);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var getTop = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _b = (_a = res).json;
+                return [4 /*yield*/, dash.topProducts(parseInt(req.params.num))];
+            case 1:
+                _b.apply(_a, [_c.sent()]);
                 return [2 /*return*/];
         }
     });
@@ -84,19 +101,25 @@ var category = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var create = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, result;
+    var result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                user = req.params.user;
+                if (!req.body.name || !req.body.price || !req.body.category) {
+                    res.status(400).json('Missing Product Information. "name", "price" and "category" fields are required.');
+                    return [2 /*return*/];
+                }
+                if (isNaN(Number(req.body.price)) || req.body.price <= 0) {
+                    res.status(400).json('Price Product must be a positive number.');
+                    return [2 /*return*/];
+                }
                 return [4 /*yield*/, store.create({
                         name: req.body.name,
                         price: req.body.price,
-                        category: req.body.category
+                        category: req.body.category,
                     })];
             case 1:
                 result = _a.sent();
-                console.log(user);
                 res.json(result);
                 return [2 /*return*/];
         }
@@ -104,6 +127,7 @@ var create = function (req, res) { return __awaiter(void 0, void 0, void 0, func
 }); };
 router.get('/', index);
 router.get('/:id', show);
+router.get('/top/:num', getTop);
 router.post('/', verifyAuthToken_1.default, create);
 router.get('/category/:cat', category);
 exports.default = router;

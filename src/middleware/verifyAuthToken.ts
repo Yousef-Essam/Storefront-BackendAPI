@@ -11,8 +11,11 @@ const verifyAuthToken = (req: Request, res: Response, next: NextFunction) => {
             token as string,
             process.env.TOKEN_SECRET as string
         )
-        req.params.tokenUserID = (decoded as JwtPayload).id;
-        console.log(`---- REQUEST made by user of id ${req.params.tokenUserID}`)
+        req.params.tokenUserID = (decoded as JwtPayload).id
+        if (process.env.ENV !== 'test')
+            console.log(
+                `---- REQUEST made by user of id ${req.params.tokenUserID}`
+            )
         next()
     } catch (err) {
         res.status(401).send(`Authorization Required ${(<Error>err).message}`)

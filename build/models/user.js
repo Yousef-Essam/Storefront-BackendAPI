@@ -87,7 +87,7 @@ var UserStore = /** @class */ (function () {
             }
         }
         var filterString = UserStore.createFilter(filter);
-        return "UPDATE users SET ".concat(newV.join(', ')).concat(filterString, ";");
+        return "UPDATE users SET ".concat(newV.join(', ')).concat(filterString, " RETURNING *;");
     };
     UserStore.createDeleteQuery = function (filter) {
         return "DELETE FROM users".concat(UserStore.createFilter(filter), ";");

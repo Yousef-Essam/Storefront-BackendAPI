@@ -82,7 +82,7 @@ var OrderStore = /** @class */ (function () {
             }
         }
         var filterString = OrderStore.createFilter(filter);
-        return "UPDATE orders SET ".concat(newV.join(', ')).concat(filterString, ";");
+        return "UPDATE orders SET ".concat(newV.join(', ')).concat(filterString, " RETURNING *;");
     };
     OrderStore.createDeleteQuery = function (filter) {
         return "DELETE FROM orders".concat(OrderStore.createFilter(filter), ";");
@@ -162,24 +162,28 @@ var OrderStore = /** @class */ (function () {
     };
     OrderStore.prototype.delete = function (filter) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, query, result, err_4;
+            var conn, query, prodQuery, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
+                        _a.trys.push([0, 4, , 5]);
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
                         query = OrderStore.createDeleteQuery(filter);
-                        return [4 /*yield*/, conn.query(query)];
+                        prodQuery = 'DELETE FROM orders_products WHERE order_id = $1;';
+                        return [4 /*yield*/, conn.query(prodQuery, [filter.id])];
                     case 2:
-                        result = _a.sent();
-                        conn.release();
-                        return [2 /*return*/, result.rows];
+                        _a.sent();
+                        return [4 /*yield*/, conn.query(query)];
                     case 3:
+                        _a.sent();
+                        conn.release();
+                        return [2 /*return*/, this.read('*')];
+                    case 4:
                         err_4 = _a.sent();
                         throw new Error("Can not delete from Table Orders ".concat(err_4.message));
-                    case 4: return [2 /*return*/];
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -193,16 +197,13 @@ var OrderStore = /** @class */ (function () {
                         _a.trys.push([0, 4, , 5]);
                         return [4 /*yield*/, this.read(['status'], { id: prod.order_id })];
                     case 1:
-                        if ((_a.sent())[0].status === 'complete')
+                        if ((_a.sent())[0]
+                            .status === 'complete')
                             throw new Error('Order is already complete.');
                         return [4 /*yield*/, database_1.default.connect()];
                     case 2:
                         conn = _a.sent();
-                        return [4 /*yield*/, conn.query("INSERT INTO orders_products (product_id, order_id, quantity) VALUES ($1, $2, $3) RETURNING *;", [
-                                prod.product_id,
-                                prod.order_id,
-                                prod.quantity
-                            ])];
+                        return [4 /*yield*/, conn.query("INSERT INTO orders_products (product_id, order_id, quantity) VALUES ($1, $2, $3) RETURNING *;", [prod.product_id, prod.order_id, prod.quantity])];
                     case 3:
                         result = _a.sent();
                         conn.release();

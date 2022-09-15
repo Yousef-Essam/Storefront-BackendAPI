@@ -4,8 +4,8 @@ import { Dashboard } from '../models/dashboard'
 import { ProductStore } from '../models/product'
 
 const router = express.Router()
-const store = new ProductStore
-const dash = new Dashboard
+const store = new ProductStore()
+const dash = new Dashboard()
 
 const index = async (req: Request, res: Response) => {
     res.json(await store.read())
@@ -32,6 +32,18 @@ const category = async (req: Request, res: Response) => {
 }
 
 const create = async (req: Request, res: Response) => {
+    if (!req.body.name || !req.body.price || !req.body.category) {
+        res.status(400).json(
+            'Missing Product Information. "name", "price" and "category" fields are required.'
+        )
+        return
+    }
+
+    if (isNaN(Number(req.body.price)) || req.body.price <= 0) {
+        res.status(400).json('Price Product must be a positive number.')
+        return
+    }
+
     const result = await store.create({
         name: req.body.name,
         price: req.body.price,

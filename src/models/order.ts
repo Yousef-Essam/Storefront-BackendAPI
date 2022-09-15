@@ -66,7 +66,9 @@ export class OrderStore {
             }
         }
         let filterString = OrderStore.createFilter(filter)
-        return `UPDATE orders SET ${newV.join(', ')}${filterString} RETURNING *;`
+        return `UPDATE orders SET ${newV.join(
+            ', '
+        )}${filterString} RETURNING *;`
     }
 
     private static createDeleteQuery(filter?: Order): string {
@@ -123,7 +125,7 @@ export class OrderStore {
             const conn = await Client.connect()
             const query = OrderStore.createDeleteQuery(filter)
             const prodQuery = 'DELETE FROM orders_products WHERE order_id = $1;'
-            await conn.query(prodQuery, [(filter as Order).id]);
+            await conn.query(prodQuery, [(filter as Order).id])
             await conn.query(query)
             conn.release()
 

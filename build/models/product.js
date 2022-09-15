@@ -82,7 +82,7 @@ var ProductStore = /** @class */ (function () {
             }
         }
         var filterString = ProductStore.createFilter(filter);
-        return "UPDATE products SET ".concat(newV.join(', ')).concat(filterString, ";");
+        return "UPDATE products SET ".concat(newV.join(', ')).concat(filterString, " RETURNING *;");
     };
     ProductStore.createDeleteQuery = function (filter) {
         return "DELETE FROM products".concat(ProductStore.createFilter(filter), ";");
