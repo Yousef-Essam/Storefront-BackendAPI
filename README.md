@@ -17,6 +17,7 @@
 - To grant permissions to the user, run the following SQL commands:
 - `GRANT ALL PRIVILEGES ON DATABASE store TO full_stack_user;`
 - `GRANT ALL PRIVILEGES ON DATABASE store_test TO full_stack_user;`
+- Basic Schema and Tables in the database are outlined in the `REQUIREMENTS.md` file.
 
 ### Setting up the application
 - To get started in running the application, the packages outlined in `package.json` should be installed
@@ -30,6 +31,8 @@
 - `npm run start`
 - To run tests, run the following command in the shell:
 - `npm run test`
+- You can access the application through `http://localhost:3000`
+- Basic endpoints in the application are outlined in the `REQUIREMENTS.md` file.
 
 ## Used Technologies
 This application make uses of the following libraries and technologies:
