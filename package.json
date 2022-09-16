@@ -9,7 +9,6 @@
     "start": "nodemon src/server.ts",
     "migrate-up": "db-migrate up",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-    "test1": "set ENV=test&& db-migrate --count 5 --env test down && db-migrate --env test up && jasmine-ts && db-migrate --count 5 --env test down",
     "test": "set ENV=test&& jasmine-ts"
   },
   "keywords": [],
