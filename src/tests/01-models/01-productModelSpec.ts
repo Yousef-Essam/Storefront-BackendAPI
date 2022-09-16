@@ -1,8 +1,13 @@
+import { execSync } from 'child_process'
 import { Product, ProductStore } from '../../models/product'
+import resetDb from '../assets/setupDB'
 
 const store = new ProductStore()
 
 describe('Product Model Testing', () => {
+    beforeAll(() => {
+        resetDb();
+    })
     describe('Checking the existence of model methods', () => {
         it('should have a create method', () => {
             expect(store.create).toBeDefined()

@@ -9,12 +9,21 @@ const store = new OrderStore()
 const dash = new Dashboard()
 
 const createOrder = async (req: Request, res: Response) => {
+    if (!req.body.products) {
+        res.status(400).json('Products Required.')
+        return
+    }
+    
     const order = await store.create({
         user_id: parseInt(req.params.tokenUserID),
         status: 'active',
     })
 
     for (let product of req.body.products) {
+        if (!product.product_id || !product.quantity) {
+            res.status(400).json('Product Detail Missing.')
+            return
+        }
         product.order_id = order.id
         await store.addProduct(product)
     }
@@ -51,6 +60,10 @@ const addProduct = async (req: Request, res: Response) => {
         }
 
         for (let product of req.body.products) {
+            if (!product.product_id || !product.quantity) {
+                res.status(400).json('Product Detail Missing.')
+                return
+            }
             product.order_id = order.id
             await store.addProduct(product)
         }
@@ -61,7 +74,7 @@ const addProduct = async (req: Request, res: Response) => {
         }
         res.json(orderDetails)
     } catch (err) {
-        res.json(
+        res.status(400).json(
             'A product you requested to add was already found in your order. Please check your order first before adding more products.'
         )
     }

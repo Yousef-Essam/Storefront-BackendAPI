@@ -1,11 +1,17 @@
 import app from '../../server'
 import supertest from 'supertest'
 import TokenStore from '../assets/TokenStore'
+import resetDb from '../assets/setupDB'
 
 const token = new TokenStore()
 const request = supertest(app)
 
 describe('Testing Users Endpoints', () => {
+    beforeAll(() => {
+        console.log('Resetting Database.............\n')
+        resetDb()
+    })
+
     describe('Testing the Create Endpoint', () => {
         it('should create the user successfully', async () => {
             const response = await request.post('/users').send({
@@ -14,7 +20,7 @@ describe('Testing Users Endpoints', () => {
                 password: 'qwerty123',
             })
             expect(response.status).toBe(200)
-            expect(response.body.id).toBe(3)
+            expect(response.body.id).toBe(1)
         })
 
         it('should fail for requiring the firstname', async () => {
@@ -54,7 +60,17 @@ describe('Testing Users Endpoints', () => {
                 password: 'asdfgh456',
             })
             expect(response.status).toBe(200)
-            expect(response.body.id).toBe(4)
+            expect(response.body.id).toBe(2)
+        })
+
+        it('should create a third user successfully', async () => {
+            const response = await request.post('/users').send({
+                firstname: 'User3',
+                lastname: 'Biden',
+                password: 'zxcvbn789',
+            })
+            expect(response.status).toBe(200)
+            expect(response.body.id).toBe(3)
         })
     })
 
@@ -100,12 +116,12 @@ describe('Testing Users Endpoints', () => {
 
         it('should authenticate successfully', async () => {
             const response = await request.post('/users/auth').send({
-                firstname: 'Yousef',
-                lastname: 'Essam',
-                password: 'password123',
+                firstname: 'User1',
+                lastname: 'Biden',
+                password: 'qwerty123',
             })
             expect(response.status).toBe(200)
-            expect(response.body.id).toBe(2)
+            expect(response.body.id).toBe(1)
 
             token.exportToken(response.body.token)
         })
@@ -128,23 +144,24 @@ describe('Testing Users Endpoints', () => {
             const response = await request
                 .get('/users')
                 .set('Authorization', 'Bearer ' + (await token.importToken()))
+
             expect(response.status).toBe(200)
             expect(response.body).toEqual([
                 {
-                    id: 2,
-                    firstname: 'Yousef',
-                    lastname: 'Essam',
-                },
-                {
-                    id: 3,
+                    id: 1,
                     firstname: 'User1',
                     lastname: 'Biden',
                 },
                 {
-                    id: 4,
+                    id: 2,
                     firstname: 'User2',
                     lastname: 'Biden',
                 },
+                {
+                    id: 3,
+                    firstname: 'User3',
+                    lastname: 'Biden'
+                }
             ])
         })
     })
@@ -159,6 +176,7 @@ describe('Testing Users Endpoints', () => {
             const response = await request
                 .get('/users/2')
                 .set('Authorization', 'Bearer ' + 'Blabla')
+
             expect(response.status).toBe(401)
         })
 
@@ -166,20 +184,22 @@ describe('Testing Users Endpoints', () => {
             const response = await request
                 .get('/users/2')
                 .set('Authorization', 'Bearer ' + (await token.importToken()))
-            expect(response.status).toBe(200)
-            expect(response.body).toEqual({
-                firstname: 'Yousef',
-                lastname: 'Essam',
-            })
-        })
 
-        it('should show the user of id 4 successfully', async () => {
-            const response = await request
-                .get('/users/4')
-                .set('Authorization', 'Bearer ' + (await token.importToken()))
             expect(response.status).toBe(200)
             expect(response.body).toEqual({
                 firstname: 'User2',
+                lastname: 'Biden',
+            })
+        })
+
+        it('should show the user of id 3 successfully', async () => {
+            const response = await request
+                .get('/users/3')
+                .set('Authorization', 'Bearer ' + (await token.importToken()))
+
+            expect(response.status).toBe(200)
+            expect(response.body).toEqual({
+                firstname: 'User3',
                 lastname: 'Biden',
             })
         })
