@@ -1,6 +1,5 @@
-import { execSync } from 'child_process'
 import { Product, ProductStore } from '../../models/product'
-import resetDb from '../assets/setupDB'
+import resetDb from '../assets/resetDb'
 
 const store = new ProductStore()
 

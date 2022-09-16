@@ -1,7 +1,7 @@
 import app from '../../server'
 import supertest from 'supertest'
 import TokenStore from '../assets/TokenStore'
-import resetDb from '../assets/setupDB'
+import resetDb from '../assets/resetDb'
 
 const token = new TokenStore()
 const request = supertest(app)
