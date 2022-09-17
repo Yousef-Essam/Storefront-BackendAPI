@@ -160,8 +160,8 @@ describe('Testing Users Endpoints', () => {
                 {
                     id: 3,
                     firstname: 'User3',
-                    lastname: 'Biden'
-                }
+                    lastname: 'Biden',
+                },
             ])
         })
     })

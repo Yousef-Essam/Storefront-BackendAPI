@@ -74,7 +74,12 @@ var TokenStore = /** @class */ (function () {
     TokenStore.prototype.deleteToken = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                promises_1.default.writeFile('src/tests/token.txt', '');
+                try {
+                    promises_1.default.unlink('src/tests/token.txt');
+                }
+                catch (err) {
+                    return [2 /*return*/];
+                }
                 return [2 /*return*/];
             });
         });

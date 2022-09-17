@@ -20,13 +20,13 @@ In this endpoint, the user id is needed for permission of access of certain oper
 - Active Orders by user [token required]: accessed via a `GET` request to `/orders/active`.
 - Complete Orders by user [token required]: accessed via a `GET` request to `/orders/complete`.
 - Show Order Details [token required]: accessed via a `GET` request to `/orders/:order_id`. `order_id` is the id of the order that the user desires to see its details.
-- Create Order [token required]: accessed via a `POST` request to `/orders`. The request body must be a json object with a `products` key which is an arrays of `product` objects. `product` objects contain two keys which are `product_id` and `quantity`.
+- Create Order [token required]: accessed via a `POST` request to `/orders/create`. The request body must be a json object with a `products` key which is an arrays of `product` objects. `product` objects contain two keys which are `product_id` and `quantity`.
 - Add products to order [token required]: accessed via a `POST` request to `/orders/:order_id`. `order_id` is the id of the order to which the user is adding products. The request body must be a json object with a `products` key which is an arrays of `product` objects. `product` objects contain two keys which are `product_id` and `quantity`.
 - Finish order (Change its status to complete) [token required]: accessed via a `GET` request to `/orders/:order_id/finish`. `order_id` is the id of the order that the user desires to finish.
 
 ## Data Shapes
 #### Product
-Table: products (
+- Table: products (
     id:serialPrimaryKey,
     name:varchar,
     price:float (must be a positive number), 
@@ -34,7 +34,7 @@ Table: products (
 )
 
 #### User
-Table: users (
+- Table: users (
     id:serialPrimaryKey,
     firstname:varchar,
     lastname:varchar, 
@@ -42,7 +42,7 @@ Table: users (
 )
 
 #### Orders
-Table: users (
+- Table: users (
     id:serialPrimaryKey,
     user_id:[Foreign key that references the id in the users table],
     status:'active' or 'complete'
@@ -50,7 +50,7 @@ Table: users (
 
 #### Orders-Products
 - Junction Table to relate the two tables orders and products that are related in a many to many relationship
-Table: orders_products (
+- Table: orders_products (
     order_id:[Foreign key that references the id in the orders table],
     product_id:[Foreign key that references the id in the products table],
     quantity:integer

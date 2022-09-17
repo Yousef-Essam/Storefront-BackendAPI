@@ -35,10 +35,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var product_1 = require("../../models/product");
+var resetDb_1 = __importDefault(require("../assets/resetDb"));
 var store = new product_1.ProductStore();
 describe('Product Model Testing', function () {
+    beforeAll(function () {
+        (0, resetDb_1.default)();
+    });
     describe('Checking the existence of model methods', function () {
         it('should have a create method', function () {
             expect(store.create).toBeDefined();

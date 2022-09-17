@@ -1,7 +1,9 @@
-import { execSync } from "child_process"
+import { execSync } from 'child_process'
 
 const resetDb = () => {
-    execSync('npx db-migrate --env test down -c 5 && npx db-migrate --env test up')
+    execSync(
+        'npx db-migrate --env test down -c 5 && npx db-migrate --env test up'
+    )
 }
 
-export default resetDb;
+export default resetDb

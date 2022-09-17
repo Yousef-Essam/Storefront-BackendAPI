@@ -85,7 +85,7 @@ describe('Order Model Testing', async () => {
                     id: 3,
                     user_id: 2,
                     status: 'complete',
-                }
+                },
             ])
         })
     })

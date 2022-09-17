@@ -20,7 +20,7 @@ export default class TokenStore {
         try {
             fs.unlink('src/tests/token.txt')
         } catch (err) {
-            return;
+            return
         }
     }
 }

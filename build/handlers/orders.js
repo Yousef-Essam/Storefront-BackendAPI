@@ -51,10 +51,15 @@ var createOrder = function (req, res) { return __awaiter(void 0, void 0, void 0,
     var _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
-            case 0: return [4 /*yield*/, store.create({
-                    user_id: parseInt(req.params.tokenUserID),
-                    status: 'active',
-                })];
+            case 0:
+                if (!req.body.products) {
+                    res.status(400).json('Products Required.');
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, store.create({
+                        user_id: parseInt(req.params.tokenUserID),
+                        status: 'active',
+                    })];
             case 1:
                 order = _c.sent();
                 _i = 0, _a = req.body.products;
@@ -62,6 +67,10 @@ var createOrder = function (req, res) { return __awaiter(void 0, void 0, void 0,
             case 2:
                 if (!(_i < _a.length)) return [3 /*break*/, 5];
                 product = _a[_i];
+                if (!product.product_id || !product.quantity) {
+                    res.status(400).json('Product Detail Missing.');
+                    return [2 /*return*/];
+                }
                 product.order_id = order.id;
                 return [4 /*yield*/, store.addProduct(product)];
             case 3:
@@ -94,15 +103,15 @@ var addProduct = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 1:
                 order = (_c.sent())[0];
                 if (!order) {
-                    res.json("An order with this ID does not exist.");
+                    res.status(404).json("An order with this ID does not exist.");
                     return [2 /*return*/];
                 }
                 if (order.user_id !== parseInt(req.params.tokenUserID)) {
-                    res.json("Can not modify this order. This order does not belong to this user.");
+                    res.status(403).json("Can not modify this order. This order does not belong to this user.");
                     return [2 /*return*/];
                 }
                 if (order.status === 'complete') {
-                    res.json("Can not add products to this order. This order is already complete.");
+                    res.status(403).json("Can not add products to this order. This order is already complete.");
                     return [2 /*return*/];
                 }
                 _i = 0, _a = req.body.products;
@@ -110,6 +119,10 @@ var addProduct = function (req, res) { return __awaiter(void 0, void 0, void 0, 
             case 2:
                 if (!(_i < _a.length)) return [3 /*break*/, 5];
                 product = _a[_i];
+                if (!product.product_id || !product.quantity) {
+                    res.status(400).json('Product Detail Missing.');
+                    return [2 /*return*/];
+                }
                 product.order_id = order.id;
                 return [4 /*yield*/, store.addProduct(product)];
             case 3:
@@ -130,7 +143,7 @@ var addProduct = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 return [3 /*break*/, 8];
             case 7:
                 err_1 = _c.sent();
-                res.json('A product you requested to add was already found in your order. Please check your order first before adding more products.');
+                res.status(400).json('A product you requested to add was already found in your order. Please check your order first before adding more products.');
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/];
         }
@@ -145,11 +158,11 @@ var showOrder = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 1:
                 order = (_b.sent())[0];
                 if (!order) {
-                    res.json("An order with this ID does not exist.");
+                    res.status(404).json("An order with this ID does not exist.");
                     return [2 /*return*/];
                 }
                 if (order.user_id !== parseInt(req.params.tokenUserID)) {
-                    res.json("Can not show this order. This order does not belong to this user.");
+                    res.status(403).json("Can not show this order. This order does not belong to this user.");
                     return [2 /*return*/];
                 }
                 _a = {
@@ -174,15 +187,15 @@ var finish = function (req, res) { return __awaiter(void 0, void 0, void 0, func
             case 1:
                 order = (_b.sent())[0];
                 if (!order) {
-                    res.json("An order with this ID does not exist.");
+                    res.status(404).json("An order with this ID does not exist.");
                     return [2 /*return*/];
                 }
                 if (order.user_id !== parseInt(req.params.tokenUserID)) {
-                    res.json("Can not modify this order. This order does not belong to this user.");
+                    res.status(403).json("Can not modify this order. This order does not belong to this user.");
                     return [2 /*return*/];
                 }
                 if (order.status === 'complete') {
-                    res.json("Order is already finished.");
+                    res.status(403).json("Order is already finished.");
                     return [2 /*return*/];
                 }
                 return [4 /*yield*/, store.update({ status: 'complete' }, { id: parseInt(req.params.order_id) })];
@@ -204,7 +217,10 @@ var active = function (req, res) { return __awaiter(void 0, void 0, void 0, func
     var orders;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.read('*', { status: 'active' })];
+            case 0: return [4 /*yield*/, store.read(['id'], {
+                    status: 'active',
+                    user_id: parseInt(req.params.tokenUserID),
+                })];
             case 1:
                 orders = _a.sent();
                 res.json(orders);
@@ -216,7 +232,10 @@ var complete = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     var orders;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, store.read('*', { status: 'complete' })];
+            case 0: return [4 /*yield*/, store.read(['id'], {
+                    status: 'complete',
+                    user_id: parseInt(req.params.tokenUserID),
+                })];
             case 1:
                 orders = _a.sent();
                 res.json(orders);

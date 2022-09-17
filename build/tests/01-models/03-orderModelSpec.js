@@ -79,6 +79,25 @@ describe('Order Model Testing', function () { return __awaiter(void 0, void 0, v
                     }
                 });
             }); });
+            it('create method of the model should add an active order', function () { return __awaiter(void 0, void 0, void 0, function () {
+                var result;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, store.create({
+                                user_id: 2,
+                                status: 'active',
+                            })];
+                        case 1:
+                            result = _a.sent();
+                            expect(result).toEqual({
+                                id: 2,
+                                user_id: 2,
+                                status: 'active',
+                            });
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
             it('create method of the model should add a complete order', function () { return __awaiter(void 0, void 0, void 0, function () {
                 var result;
                 return __generator(this, function (_a) {
@@ -90,7 +109,7 @@ describe('Order Model Testing', function () { return __awaiter(void 0, void 0, v
                         case 1:
                             result = _a.sent();
                             expect(result).toEqual({
-                                id: 2,
+                                id: 3,
                                 user_id: 2,
                                 status: 'complete',
                             });
@@ -113,6 +132,11 @@ describe('Order Model Testing', function () { return __awaiter(void 0, void 0, v
                                 },
                                 {
                                     id: 2,
+                                    user_id: 2,
+                                    status: 'active',
+                                },
+                                {
+                                    id: 3,
                                     user_id: 2,
                                     status: 'complete',
                                 },
@@ -169,7 +193,7 @@ describe('Order Model Testing', function () { return __awaiter(void 0, void 0, v
             it('addProduct method of the model should fail to add products to a complete order', function () { return __awaiter(void 0, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, expectAsync(store.addProduct({ order_id: 2, product_id: 2, quantity: 1 })).toBeRejected()];
+                        case 0: return [4 /*yield*/, expectAsync(store.addProduct({ order_id: 3, product_id: 2, quantity: 1 })).toBeRejected()];
                         case 1:
                             _a.sent();
                             return [2 /*return*/];
@@ -207,6 +231,11 @@ describe('Order Model Testing', function () { return __awaiter(void 0, void 0, v
                             expect(result).toEqual([
                                 {
                                     id: 2,
+                                    user_id: 2,
+                                    status: 'active',
+                                },
+                                {
+                                    id: 3,
                                     user_id: 2,
                                     status: 'complete',
                                 },

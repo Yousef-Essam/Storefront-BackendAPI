@@ -5,7 +5,7 @@ const store = new ProductStore()
 
 describe('Product Model Testing', () => {
     beforeAll(() => {
-        resetDb();
+        resetDb()
     })
     describe('Checking the existence of model methods', () => {
         it('should have a create method', () => {

@@ -13,7 +13,7 @@ const createOrder = async (req: Request, res: Response) => {
         res.status(400).json('Products Required.')
         return
     }
-    
+
     const order = await store.create({
         user_id: parseInt(req.params.tokenUserID),
         status: 'active',
