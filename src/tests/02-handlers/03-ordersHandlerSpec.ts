@@ -282,6 +282,58 @@ describe('Testing Orders Endpoints', () => {
         })
     })
 
+    describe('Advanced Orders Endpoint Testing', () => {
+        it('should authenticate another user successfully', async () => {
+            const response = await request.post('/users/auth').send({
+                firstname: 'User2',
+                lastname: 'Biden',
+                password: 'asdfgh456',
+            })
+
+            expect(response.status).toBe(200)
+            expect(response.body.id).toBe(2)
+            token.exportToken(response.body.token)
+        })
+
+        it('should fail for requiring authoriztion token', async () => {
+            const response = await request.get('/orders/1');
+
+            expect(response.status).toBe(401)
+        })
+
+        it('should be forbidden to show order since this order does not belong to this user', async () => {
+            const response = await request.get('/orders/1').set('Authorization', 'Bearer ' + await token.importToken());
+
+            expect(response.status).toBe(403)
+        })
+
+        it('should fail for requiring authoriztion token', async () => {
+            const response = await request.post('/orders/1').send({
+                products: [
+                    {
+                        product_id: 1,
+                        quantity: 4
+                    }
+                ]
+            });
+
+            expect(response.status).toBe(401)
+        })
+
+        it('should be forbidden to add products since this order does not belong to this user', async () => {
+            const response = await request.post('/orders/1').set('Authorization', 'Bearer ' + await token.importToken()).send({
+                products: [
+                    {
+                        product_id: 1,
+                        quantity: 4
+                    }
+                ]
+            });
+
+            expect(response.status).toBe(403)
+        })
+    })
+
     afterAll(() => {
         token.deleteToken()
         dropDb()
