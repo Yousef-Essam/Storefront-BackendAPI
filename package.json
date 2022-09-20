@@ -9,7 +9,8 @@
     "start": "nodemon src/server.ts",
     "migrate-up": "db-migrate up",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
-    "test": "set ENV=test&& jasmine-ts"
+    "jasmine-ts": "ts-node node_modules/jasmine/bin/jasmine",
+    "test": "set ENV=test&& npm run jasmine-ts"
   },
   "keywords": [],
   "author": "",
@@ -33,9 +34,8 @@
     "@types/pg": "^8.6.5",
     "@types/supertest": "^2.0.12",
     "bcrypt": "^5.0.1",
-    "jasmine": "^3.6.4",
+    "jasmine": "^4.4.0",
     "jasmine-spec-reporter": "^7.0.0",
-    "jasmine-ts": "^0.4.0",
     "prettier": "^2.7.1",
     "supertest": "^6.2.4",
     "ts-node": "^10.9.1"
