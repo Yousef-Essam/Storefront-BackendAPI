@@ -10,14 +10,14 @@ describe('Testing Orders Endpoints', () => {
     describe('Testing Create Orders Endpoint', () => {
         it('should fail for requiring Authorization Token', async () => {
             const response = await request
-                .post('/orders/create')
+                .post('/orders')
                 .send({ products: [{ product_id: 2, quantity: 2 }] })
 
             expect(response.status).toBe(401)
         })
         it('should fail for the absence of products array', async () => {
             const response = await request
-                .post('/orders/create')
+                .post('/orders')
                 .set('Authorization', 'Bearer ' + (await token.importToken()))
                 .send({ someKey: 'blabla' })
 
@@ -26,7 +26,7 @@ describe('Testing Orders Endpoints', () => {
 
         it('should successfully create order', async () => {
             const response = await request
-                .post('/orders/create')
+                .post('/orders')
                 .set('Authorization', 'Bearer ' + (await token.importToken()))
                 .send({ products: [{ product_id: 2, quantity: 2 }] })
 
@@ -47,7 +47,7 @@ describe('Testing Orders Endpoints', () => {
 
         it('should successfully create another order', async () => {
             const response = await request
-                .post('/orders/create')
+                .post('/orders')
                 .set('Authorization', 'Bearer ' + (await token.importToken()))
                 .send({ products: [{ product_id: 1, quantity: 3 }] })
 

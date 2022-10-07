@@ -10,7 +10,8 @@
     "migrate-up": "db-migrate up",
     "prettier": "prettier --config .prettierrc src/**/*.ts --write",
     "jasmine-ts": "ts-node node_modules/jasmine/bin/jasmine",
-    "test": "set ENV=test&& npm run jasmine-ts"
+    "test": "set ENV=test&& npm run jasmine-ts",
+    "push": "git add . && git commit -m \"Pushing Changes\" && git push origin main"
   },
   "keywords": [],
   "author": "",

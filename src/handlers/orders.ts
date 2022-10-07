@@ -162,7 +162,7 @@ router.get('/active', verifyAuthToken, active)
 router.get('/complete', verifyAuthToken, complete)
 router.get('/:order_id', verifyAuthToken, showOrder)
 router.get('/:order_id/finish', verifyAuthToken, finish)
-router.post('/create', verifyAuthToken, createOrder)
+router.post('/', verifyAuthToken, createOrder)
 router.post('/:order_id', verifyAuthToken, addProduct)
 
 export default router
